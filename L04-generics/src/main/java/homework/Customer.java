@@ -1,6 +1,7 @@
 package homework;
 
-public class Customer implements Cloneable {
+public class Customer implements Comparable<Customer> {
+
     private final long id;
     private String name;
     private long scores;
@@ -61,6 +62,14 @@ public class Customer implements Cloneable {
 
     @Override
     public int hashCode() {
-        return (int) (id);
+        return (int) (id ^ (id >>> 32));
+    }
+
+    @Override
+    public int compareTo(Customer o) {
+        if (this.scores < o.getScores()) {
+            return -1;
+        }
+        return 1;
     }
 }
