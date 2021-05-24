@@ -1,6 +1,7 @@
 package homework;
 
-public class Customer implements Cloneable {
+public class Customer {
+
     private final long id;
     private String name;
     private long scores;
@@ -61,6 +62,6 @@ public class Customer implements Cloneable {
 
     @Override
     public int hashCode() {
-        return (int) (id);
+        return (int) (id ^ (id >>> 32));
     }
 }

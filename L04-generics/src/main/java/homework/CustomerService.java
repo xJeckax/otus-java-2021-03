@@ -1,6 +1,5 @@
 package homework;
 
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -8,7 +7,8 @@ import java.util.Set;
 
 public class CustomerService {
 
-    Map<Customer, String> map = new HashMap<>();
+    private final Map<Customer, String> map = new HashMap<>();
+
     //todo: 3. надо реализовать методы этого класса
     //важно подобрать подходящую Map-у, посмотрите на редко используемые методы, они тут полезны
 
