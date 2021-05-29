@@ -1,5 +1,6 @@
 package homework;
 
+
 public class Customer implements Comparable<Customer> {
 
     private final long id;
