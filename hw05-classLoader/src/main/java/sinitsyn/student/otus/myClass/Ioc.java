@@ -38,6 +38,7 @@ class Ioc {
                 if (ann instanceof Log) {
                     System.out.printf("executed method : %s , params : %s%n", method.getName(),
                             String.join(", ", strings));
+
                 }
             }
             return method.invoke(myClass, args);
