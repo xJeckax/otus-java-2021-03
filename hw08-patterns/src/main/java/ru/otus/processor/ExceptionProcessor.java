@@ -5,6 +5,16 @@ import ru.otus.model.Message;
 import java.util.Date;
 
 public class ExceptionProcessor implements Processor {
+    private final Date date;
+
+    public ExceptionProcessor() {
+        this.date = new Date();
+    }
+
+    public Date getInitDate() {
+        return this.date;
+    }
+
     @Override
     public Message process(Message message) {
         Date date = new Date();

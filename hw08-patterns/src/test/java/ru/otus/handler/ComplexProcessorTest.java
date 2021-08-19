@@ -13,6 +13,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -99,18 +100,18 @@ class ComplexProcessorTest {
     @DisplayName("Тестируем исключение для чётной секунды")
     void exceptionProcessorTest() {
         ExceptionProcessor exceptionProcessor = new ExceptionProcessor();
-        ComplexProcessor complexProcessor = new ComplexProcessor(List.of(exceptionProcessor), e -> {
-        });
+        Long seconds = System.currentTimeMillis() / 1000;
+        Long secondsInitExceptionProc = exceptionProcessor.getInitDate().getTime() / 1000;
 
         var message = new Message.Builder(1L).field8("field8").build();
-        while (true) {
-            if ((System.currentTimeMillis() / 1000) % 2 == 0) {
-                assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> exceptionProcessor.process(message));
-                break;
-            }
+
+        assertThat(secondsInitExceptionProc).isEqualTo(seconds);
+
+        if ((exceptionProcessor.getInitDate().getTime() / 1000) % 2 == 0) {
+            assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> exceptionProcessor.process(message));
+        } else {
+            assertThatNoException().isThrownBy(() -> exceptionProcessor.process(message));
         }
-
-
     }
 
     private static class TestException extends RuntimeException {

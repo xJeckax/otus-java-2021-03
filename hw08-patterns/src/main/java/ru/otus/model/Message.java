@@ -8,12 +8,6 @@ public class Message implements Cloneable {
     private final String field4;
     private final String field5;
     private final String field6;
-
-    @Override
-    public Message clone() throws CloneNotSupportedException {
-        return (Message) super.clone();
-    }
-
     private final String field7;
     private final String field8;
     private final String field9;
@@ -95,6 +89,13 @@ public class Message implements Cloneable {
 
     public ObjectForMessage getField13() {
         return field13;
+    }
+
+    @Override
+    public Message clone() throws CloneNotSupportedException {
+        Message message = (Message) super.clone();
+        ObjectForMessage ofm = message.getField13();
+        return message.toBuilder().field13(ofm.clone()).build();
     }
 
     @Override
