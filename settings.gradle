@@ -3,5 +3,7 @@ include 'hw01-gradle'
 include 'hw02-generics'
 include 'hw05-classLoader'
 
+include 'hw10-orm-jdbc:demo'
+include 'hw10-orm-jdbc:homework'
 
 
