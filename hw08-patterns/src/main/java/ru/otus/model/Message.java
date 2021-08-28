@@ -11,7 +11,11 @@ public class Message implements Cloneable {
 
     @Override
     public Message clone() throws CloneNotSupportedException {
-        return (Message) super.clone();
+        Message message = (Message) super.clone();
+
+        ObjectForMessage objectForMessageClone = message.getField13().clone();
+        message = message.toBuilder().field13(objectForMessageClone).build();
+        return message;
     }
 
     private final String field7;

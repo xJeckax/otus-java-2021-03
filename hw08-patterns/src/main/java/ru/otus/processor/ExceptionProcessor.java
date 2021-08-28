@@ -1,23 +1,21 @@
 package ru.otus.processor;
 
 import ru.otus.model.Message;
+import ru.otus.processor.memento.DateTimeProvider;
 import ru.otus.processor.memento.ExceptionProcessorState;
 
-import java.util.Date;
-
 public class ExceptionProcessor implements Processor {
-    private Date date;
+    private DateTimeProvider date;
 
-    public ExceptionProcessor() {
-        this.date = new Date();
+    public ExceptionProcessor(DateTimeProvider date) {
+        this.date = date;
     }
 
     @Override
     public Message process(Message message) {
-        Date date = new Date();
-        long second = date.getTime() / 1000;
-        if ((second % 2) == 0) {
-            throw new RuntimeException(String.format("Even second - %s", second));
+
+        if ((date.getDate().getSecond() % 2) == 0) {
+            throw new RuntimeException(String.format("Even second - %s", date.getDate().getSecond()));
         }
         return message;
     }
@@ -27,6 +25,6 @@ public class ExceptionProcessor implements Processor {
     }
 
     public void restoreState(ExceptionProcessorState state) {
-        this.date = new Date(state.getDate().getTime());
+        this.date = state::getLocalDateTime;
     }
 }

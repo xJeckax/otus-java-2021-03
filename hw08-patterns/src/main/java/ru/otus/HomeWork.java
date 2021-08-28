@@ -12,6 +12,7 @@ import ru.otus.processor.ProcessorConcatFields;
 import ru.otus.processor.ProcessorUpperField10;
 import ru.otus.processor.SwapFieldProcessor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class HomeWork {
@@ -26,8 +27,8 @@ public class HomeWork {
      */
 
     public static void main(String[] args) {
-        List<Processor> processors = List.of(new ExceptionProcessor(), new LoggerProcessor(new ProcessorConcatFields()), new LoggerProcessor(new ProcessorUpperField10()),
-                new LoggerProcessor(new SwapFieldProcessor()), new ExceptionProcessor());
+        List<Processor> processors = List.of(new ExceptionProcessor(LocalDateTime::now), new LoggerProcessor(new ProcessorConcatFields()), new LoggerProcessor(new ProcessorUpperField10()),
+                new LoggerProcessor(new SwapFieldProcessor()), new ExceptionProcessor(LocalDateTime::now));
 
         ComplexProcessor complexProcessor = new ComplexProcessor(processors, e -> System.err.println(e));
 
