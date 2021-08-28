@@ -8,7 +8,6 @@ import ru.otus.model.Message;
 import ru.otus.processor.ExceptionProcessor;
 import ru.otus.processor.Processor;
 import ru.otus.processor.memento.ExceptionProcessorState;
-import ru.otus.processor.memento.Originator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,33 +99,27 @@ class ComplexProcessorTest {
     @Test
     @DisplayName("Тестируем исключение для чётной секунды")
     void exceptionProcessorTest() {
-        Originator originator = new Originator();
-
         // обьект чьё состояние будем сохранять
         ExceptionProcessor exceptionProcessor = new ExceptionProcessor();
 
         //Время seconds должно быть таким же, как в обьекте  exceptionProcessor
         // т.к как мы проверяем секунды, а выполнение создание обьекта занимаем микро
-        Long seconds = System.currentTimeMillis() / 1000;
+        long seconds = System.currentTimeMillis() / 1000;
 
         //Сохранили состояние обьекта  exceptionProcessor
         ExceptionProcessorState state = exceptionProcessor.saveState();
-        originator.saveState(state);
-
         //Проверяем что время обьекта exceptionProcessor при создании
         // равно ожидаемому
-        assertThat(state.getDate().getTime() / 1000).isEqualTo(seconds);
+        assertThat((long) state.getLocalDateTime().getSecond()).isEqualTo(seconds);
 
         ComplexProcessor complexProcessor = new ComplexProcessor(List.of(exceptionProcessor), e -> {
         });
 
         var message = new Message.Builder(1L).field8("field8").build();
         // проверяем, что секунда чётная и выбрасывается нужное исключение
-        if ((state.getDate().getTime() / 1000) % 2 == 0) {
+        if (state.getLocalDateTime().getSecond() % 2 == 0) {
             assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> exceptionProcessor.process(message));
         }
-
-
     }
 
     private static class TestException extends RuntimeException {

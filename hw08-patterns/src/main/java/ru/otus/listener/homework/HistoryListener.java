@@ -2,7 +2,6 @@ package ru.otus.listener.homework;
 
 import ru.otus.listener.Listener;
 import ru.otus.model.Message;
-import ru.otus.model.ObjectForMessage;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,9 +14,7 @@ public class HistoryListener implements Listener, HistoryReader {
     @Override
     public void onUpdated(Message msg) {
         try {
-            ObjectForMessage ofm = msg.getField13().clone();
-            Message message = msg.toBuilder().field13(ofm).build();
-            messageMap.put(message.getId(), message);
+            messageMap.put(msg.getId(), msg.clone());
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }

@@ -3,13 +3,14 @@ package ru.otus.processor;
 import ru.otus.model.Message;
 import ru.otus.processor.memento.ExceptionProcessorState;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class ExceptionProcessor implements Processor {
-    private Date date;
+    private LocalDateTime date;
 
     public ExceptionProcessor() {
-        this.date = new Date();
+        this.date = LocalDateTime.now();
     }
 
     @Override
@@ -23,10 +24,10 @@ public class ExceptionProcessor implements Processor {
     }
 
     public ExceptionProcessorState saveState() {
-        return new ExceptionProcessorState(date);
+        return new ExceptionProcessorState(() -> date);
     }
 
     public void restoreState(ExceptionProcessorState state) {
-        this.date = new Date(state.getDate().getTime());
+        this.date = state.getLocalDateTime();
     }
 }

@@ -1,19 +1,19 @@
 package ru.otus.processor.memento;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class ExceptionProcessorState {
-    private Date date;
+    private final LocalDateTime localDateTime;
 
-    public ExceptionProcessorState(Date date) {
-        this.date = date;
+    public ExceptionProcessorState(DateTimeProvider date) {
+        this.localDateTime = date.getDate();
     }
 
     public ExceptionProcessorState(ExceptionProcessorState state) {
-        this.date = new Date(state.getDate().getTime());
+        this.localDateTime = state.getLocalDateTime();
     }
 
-    public Date getDate() {
-        return date;
+    public LocalDateTime getLocalDateTime() {
+        return localDateTime;
     }
 }
