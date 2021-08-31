@@ -17,7 +17,7 @@ public class EntityClassMetaDataImpl implements EntityClassMetaData {
     public EntityClassMetaDataImpl(Class aClass) throws NoSuchMethodException {
         this.className = aClass.getSimpleName();
         this.fields = aClass.getDeclaredFields();
-        this.constructor = aClass.getConstructor(Long.class,String.class);
+        this.constructor = aClass.getConstructor();
     }
 
     @Override

@@ -1,6 +1,5 @@
 package ru.otus.core.repository;
 
-import javax.naming.OperationNotSupportedException;
 import java.sql.Connection;
 import java.util.List;
 import java.util.Optional;
@@ -12,5 +11,5 @@ public interface DataTemplate<T> {
 
     long insert(Connection connection, T object);
 
-    void update(Connection connection, T object) throws OperationNotSupportedException;
+    void update(Connection connection, T object) throws Exception;
 }

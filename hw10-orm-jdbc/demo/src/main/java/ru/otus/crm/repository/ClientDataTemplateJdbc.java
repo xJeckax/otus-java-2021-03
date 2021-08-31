@@ -60,7 +60,7 @@ public class ClientDataTemplateJdbc implements DataTemplate<Client> {
     }
 
     @Override
-    public void update(Connection connection, Client client) {
+    public void update(Connection connection, Client client) throws Exception {
         try {
             dbExecutor.executeStatement(connection, "update client set name = ? where id = ?",
                     List.of(client.getName(), client.getId()));

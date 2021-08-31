@@ -4,8 +4,6 @@ import ru.otus.core.repository.DataTemplate;
 import ru.otus.core.repository.DataTemplateException;
 import ru.otus.core.repository.executor.DbExecutor;
 
-import javax.naming.OperationNotSupportedException;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -13,6 +11,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Сохратяет объект в базу, читает объект из базы
@@ -33,10 +32,19 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
     public Optional<T> findById(Connection connection, long id) {
         return dbExecutor.executeSelect(connection, entitySQLMetaData.getSelectByIdSql(), Arrays.asList(id), rs -> {
             try {
+                T object = (T) entityClassMetaData.getConstructor().newInstance();
                 if (rs.next()) {
-                    long ID = rs.getLong(entityClassMetaData.getIdField().getName());
-                    String name = rs.getString(entityClassMetaData.getFieldsWithoutId().get(0).getName());
-                    return (T)entityClassMetaData.getConstructor().newInstance(ID,name);
+                    entityClassMetaData.getAllFields().forEach(field -> {
+                        try {
+                            field.setAccessible(true);
+                            field.set(object, rs.getObject(field.getName(), field.getType()));
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            throw new DataTemplateException(e);
+                        }
+                    });
+                    return object;
                 }
                 return null;
             } catch (Exception e) {
@@ -52,8 +60,16 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
             List<T> clientList = new ArrayList<T>();
             try {
                 while (rs.next()) {
-                    Constructor<T> constructor = entityClassMetaData.getConstructor();
-                    clientList.add(constructor.newInstance(rs.getInt(1), rs.getString(2)));
+                    T object = (T) entityClassMetaData.getConstructor().newInstance();
+                    entityClassMetaData.getAllFields().forEach(field -> {
+                        try {
+                            field.setAccessible(true);
+                            field.set(object, rs.getObject(field.getName(), field.getType()));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+                    clientList.add(object);
                 }
                 return clientList;
             } catch (Exception e) {
@@ -64,18 +80,35 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
 
     @Override
     public long insert(Connection connection, T client) {
-        try {
-            Field field = entityClassMetaData.getFieldsWithoutId().get(0);
+        List<Object> arguments = entityClassMetaData.getFieldsWithoutId().stream().map(field -> {
             field.setAccessible(true);
-            String valueField = (String) field.get(client);
-            return dbExecutor.executeStatement(connection, entitySQLMetaData.getInsertSql(), Arrays.asList(valueField));
-        } catch (Exception e) {
-            throw new DataTemplateException(e);
-        }
+            try {
+                return (String) field.get(client);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+                throw new DataTemplateException(e);
+            }
+        }).collect(Collectors.toList());
+
+        return dbExecutor.executeStatement(connection, entitySQLMetaData.getInsertSql(), arguments);
     }
 
     @Override
-    public void update(Connection connection, T client) throws OperationNotSupportedException {
-        throw new OperationNotSupportedException();
+    public void update(Connection connection, T client) throws Exception {
+        List<Object> arguments = new ArrayList<>();
+        entityClassMetaData.getFieldsWithoutId().forEach(field -> {
+            field.setAccessible(true);
+            try {
+                arguments.add(field.get(client));
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+                throw new DataTemplateException(e);
+            }
+        });
+        Field filed = entityClassMetaData.getIdField();
+        filed.setAccessible(true);
+        arguments.add(filed.get(client));
+
+        dbExecutor.executeStatement(connection, entitySQLMetaData.getUpdateSql(), arguments);
     }
 }

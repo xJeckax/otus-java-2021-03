@@ -7,7 +7,6 @@ import ru.otus.core.sessionmanager.TransactionRunner;
 import ru.otus.crm.model.Manager;
 
 import javax.naming.OperationNotSupportedException;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +33,8 @@ public class DbServiceManagerImpl implements DBServiceManager {
             try {
                 managerDataTemplate.update(connection, manager);
             } catch (OperationNotSupportedException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             log.info("updated manager: {}", manager);

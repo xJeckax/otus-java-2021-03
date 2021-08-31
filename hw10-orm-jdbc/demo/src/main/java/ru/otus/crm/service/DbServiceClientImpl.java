@@ -34,6 +34,8 @@ public class DbServiceClientImpl implements DBServiceClient {
                 clientDataTemplate.update(connection, client);
             } catch (OperationNotSupportedException e) {
                 e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
             log.info("updated client: {}", client);
             return client;
