@@ -3,5 +3,6 @@ include 'hw01-gradle'
 include 'hw02-generics'
 include 'hw05-classLoader'
 include 'hw09-serializable'
+include 'hw11-hibernate_JPQL'
 include 'hw08-patterns'
 
